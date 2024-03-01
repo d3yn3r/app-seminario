@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    <title>Estadísticas</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <input type="hidden" id="filtro" name="variable1" value="{{ filtro }}">
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="container p-4">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label for="tags">Buscar inspección </label>
+                    </div>
+
+                    <div class="col-sm-5">
+                        <label for="activos">Buscar activo </label>
+                    </div>
+
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-sm-5  form-group ">
+
+                        <select id="tipoSelect" name="tipo" class=" form-select form-control required">
+                            <option>_______</option>
+                            {% for cuestionario in inspecciones %}
+                                <option value="{{ cuestionario.id }}" {% if cuestionario.id ==  tipo %}
+                                        selected {% endif %}>{{ cuestionario.tipoDeInspeccion }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-sm-5  form-group ">
+                        <select name="activo" class="form-select form-control required"
+                                id="activoSelect" {% if tipo == '' %}disabled{% endif %}>
+                            <option value="Todos">Todos</option>
+                            {% for control in activos %}
+                                <option value="{{ control }}" {% if control ==  activo %}
+                                        selected {% endif %}>{{ control }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm">
+                        <button type="submit" class="btn btn-info btn-sm ml-1 align-self-end">Buscar</button>
+                    </div>
+                </div>
+
+
+            </div>
+        </form>
+        <br>
+
+        {% if datosGrafica|length == 0 %}
+            <div class="container-fluid text-center">
+                <h5>{{ mensaje }}</h5>
+            </div>
+        {% else %}
+        {% endif %}
+        {% for pregunta,opc in datosGrafica.items %}
+            <div id="cont{{ pregunta }}"
+                 class="shadow-lg p-3 mb-5 bg-white"></div>
+
+            <input type="hidden" id="pregunta{{ pregunta }}" name="variable1" value="{{ opc }}">
+            <script>
+                $(document).ready(function () {
+                    const opciones = document.getElementById("pregunta{{ pregunta }}").value;
+                    const nuevo1 = opciones.replaceAll("'", '"')
+                    const nuevo = JSON.parse(nuevo1);
+                    const totalOpciones = nuevo['opciones']
+                    let total = 0;
+                    totalOpciones.forEach(function (a) {
+                        total += parseInt(a['y']);
+                    });
+                    Highcharts.chart($('#cont{{ pregunta }}')[0], {
+                        chart: {
+                            type: 'pie',
+                        },
+                        title: {
+                            text: nuevo['pregunta']['titulo'],
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b style="text-align: left; font-weight: normal">{point.name}: {point.y}</b> '
+                                }
+                            }
+                        },
+                        credits: {
+                            position: {
+                                align: 'right'
+                            },
+                            text: 'Total respuestas: ' + total,
+                            href: null,
+                            style: {
+                                fontSize: 15,
+                            }
+                        },
+
+                        subtitle: {
+                            text: nuevo['pregunta']['eje'] + '//' + nuevo['pregunta']['lado'] + '//' + nuevo['pregunta']['posicionZ'] + '<br>' + nuevo['pregunta']['descripcion']
+                        },
+                        accessibility: {
+                            point: {
+                                valueSuffix: '%'
+                            }
+                        },
+                        series: [
+                            {
+                                name: 'Respuestas',
+                                colorByPoint: true,
+                                data: nuevo['opciones'],
+                            },
+                        ],
+                    });
+                });
+            </script>
+        {% endfor %}
+    </div>
+{% endblock %}
+{% block funciones %}
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+            integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+    <script src=https://code.highcharts.com/highcharts.js></script>
+
+    <script>
+        const tipoSelect = document.getElementById('tipoSelect')
+        const activoSelect = document.getElementById('activoSelect')
+        const opciones = document.getElementById("filtro").value;
+        const nuevo1 = opciones.replaceAll("'", '"')
+        const nuevo = JSON.parse(nuevo1);
+        tipoSelect.addEventListener('change', (event) => {
+            const lista = nuevo[event.target.value.toString()]
+            $("#activoSelect").empty();
+            const arrOptions = [];
+            arrOptions.push("<option value='Todos' selected>Todos</option>");
+            lista.forEach(function (element) {
+                arrOptions.push("<option value=" + element + ">" + element + "</option>");
+            });
+            activoSelect.innerHTML = arrOptions.join();
+            activoSelect.disabled = false;
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+{% load gomac_tags %}
+<html lang="en">
+<head>
+    <style>
+        .preguntaPadre {
+            background-color: #d8e9f6;
+        }
+
+        .row1 {
+            background-color: #f2f2f2;
+        }
+
+        .row2, .cuadricula {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<tr class="{{ rowClass }}">
+
+    <td>
+        {% get_respuesta resp as respuestaDada %}
+        {% if rowClass != 'preguntaPadre' and rowClass != 'cuadricula' %}
+            <strong>
+                <div class="text-center">{{ respuestaDada.opcion }}</div>
+            </strong>
+        {% endif %}
+        {% if resp.opcion_respondida.calificable %}
+            Criticidad inspector: {{ resp.criticidad_del_inspector }}
+            <br>
+        {% endif %}
+        {% if rowClass != 'preguntaPadre' and rowClass != 'cuadricula' %}
+            Criticidad respuesta: {{ respuestaDada.criticidad }}
+            <br>
+        {% endif %}
+        {% if resp.observacion %}
+            Observación: {{ resp.observacion }}
+            <br>
+        {% endif %}
+        {% if resp.fotos_base|length > 0 %}
+            <details>
+                <summary>Ver fotos</summary>
+
+                {% for foto in resp.fotos_base %}
+                    <div style="display: inline">
+                        <a href="{{ foto.foto.url }}" target="_blank">
+                            <img src="{{ foto.foto.url }}"
+                                 class="img-thumbnail img-responsive"
+                                 style="width: 80%"/>
+                        </a>
+                    </div>
+                {% endfor %}
+
+            </details>
+        {% endif %}
+    </td>
+    <td class="text-center"> {{ resp.criticidad_calculada }}
+    </td>
+    <td>
+        {% if resp.reparado %}
+            Reparado
+            <details>
+                <summary>Ver detalles</summary>
+                Observación: {{ resp.observacion_reparacion }} <br>
+                <strong>Fotos: </strong><br>
+                {% for foto in resp.fotos_reparacion %}
+                    <div style="display: inline">
+                        <a href="{{ foto.foto.url }}" target="_blank">
+                            <img src="{{ foto.foto.url }}"
+                                 class="img-thumbnail img-responsive"
+                                 style="width: 80%"/>
+                        </a>
+                    </div>
+                {% endfor %}
+            </details>
+        {% elif resp.criticidad_calculada_con_reparaciones > 0 %}
+            No reparado
+        {% else %}
+            Sin novedad
+        {% endif %}
+    </td>
+    <!--style="width:7%;  background-color:
+                                    {% if  resp.reparado %}
+                                        rgba(237,181,34,0.6)
+                                    {% elif resp.criticidad_calculada_con_reparaciones > 0 %}
+                                        #db7205
+                                    {% else %}
+                                        #72a38d
+                                    {% endif %}"-->
+    <td
+            class="text-center">
+        {{ resp.criticidad_calculada_con_reparaciones }}
+    </td>
+
+    <td>
+        {% if resp.radicado is  not None %}
+            <div class="text-center">
+                {{ resp.radicado }} <br>
+                <a role="button" class="btn btn-outline-secondary btn-sm"
+                   data-toggle="modal"
+                   data-target="#cambio{{ resp.id }}"
+                   data-placement="bottom">Editar</a>
+
+
+            </div>
+
+        {% endif %}
+    </td>
+    <td>
+        {% if resp.historicoRadicado is not None  and resp.historicoRadicado|length > 0 %}
+
+            {% for radicado in resp.historicoRadicado %}
+                <li>{{ radicado }}</li>
+            {% endfor %}
+        {% endif %}
+
+    </td>
+</tr>
+</body>
+</html>

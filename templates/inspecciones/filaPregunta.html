@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+<tr class="{{ rowClass }} ">
+    <td rowspan="{{ detalleRespuesta.rowspan }}"><strong>
+        <div class="text-center">
+            {{ respuestaPadre.pregunta.titulo }}
+        </div>
+    </strong>
+        {% if respuestaPadre.pregunta.descripcion %}
+            Descripción: {{ respuestaPadre.pregunta.descripcion }}
+        {% endif %}
+    </td>
+    <td rowspan="{{ detalleRespuesta.rowspan }}" style="width:5%">
+        <ul>
+            {% for etiqueta in  respuestaPadre.pregunta.etiquetas.all %}
+                <li>{{ etiqueta }} </li>
+            {% endfor %}
+        </ul>
+    </td>
+    <td rowspan="{{ detalleRespuesta.rowspan }}" class="text-center"
+        style="width:5%"> {{ respuestaPadre.pregunta.criticidad }}</td>
+</tr>
+</body>
+</html>

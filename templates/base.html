@@ -1,0 +1,33 @@
+{% extends 'bootstrap.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block bootstrap5_title %}{% block title %}gomac{% endblock %}{% endblock %}
+
+{% block bootstrap5_extra_head %}
+    <!-- iconos -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+
+    <!-- css comun en la app -->
+    <link href="{% static 'assets/css/common.css' %}" rel="stylesheet">
+
+    <!-- css para el menu -->
+    <link href="{% static 'assets/css/menu.css' %}" rel="stylesheet">
+
+    {% block extra_head %}{% endblock %}
+{% endblock %}
+
+{% block bootstrap5_content %}
+
+    {% if request.resolver_match.url_name != 'login' and request.resolver_match.url_name != 'registro' %}
+        {% include "menu.html" %}
+    {% endif %}
+
+    {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+    <div class="content py-3">
+        {% block content %}{% endblock %}
+    </div>
+
+{% endblock %}
+
+{% block bootstrap5_extra_script %}{% block extra_script %}{% endblock %}{% endblock %}

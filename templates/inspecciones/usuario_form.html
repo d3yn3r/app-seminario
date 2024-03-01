@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %}{{ organizacion.nombre }}{% endblock %}
+{% block extra_head %}
+    <link href="{% static 'assets/organizaciones/organizaciones.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+    <form class="card card-gomac" method="post" enctype="multipart/form-data">
+        <div class="card-body">
+            {% csrf_token %}
+            {% bootstrap_form form_user layout="floating" %}
+            {% bootstrap_form form_perfil layout="floating" %}
+            {% bootstrap_button button_type="submit" content="guardar" %}
+            {% bootstrap_button button_type="link" href="javascript:history.go(-1)" content="cancelar" %}
+        </div>
+    </form>
+
+{% endblock %}

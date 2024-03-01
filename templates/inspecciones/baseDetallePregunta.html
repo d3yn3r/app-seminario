@@ -1,0 +1,24 @@
+{% load gomac_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+{% get_subRespuestas respuestaPadre as detalleRespuesta %}
+
+{% include 'inspecciones/filaPregunta.html' %}
+{% if respuestaPadre.tipo_de_respuesta == 'seleccion_multiple' or respuestaPadre.tipo_de_respuesta == 'cuadricula' %}
+    {% include "inspecciones/filaRespuesta.html" with resp=respuestaPadre rowClass="preguntaPadre" %}
+
+{% endif %}
+{% for resp in detalleRespuesta.subRespuestas %}
+
+    {% if respuestaPadre.pregunta.tipo_de_cuadricula == 'seleccion_unica' %}
+        {% include 'inspecciones/filaPregunta.html' with respuestaPadre=resp %}
+    {% endif %}
+    {% if respuestaPadre.pregunta.tipo_de_cuadricula != 'seleccion_multiple' %}
+        {% include 'inspecciones/filaRespuesta.html' %}
+    {% endif %}
+
+{% endfor %}
+</body>
+</html>

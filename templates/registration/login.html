@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %}login{% endblock %}
+{% block extra_head %}
+    <link href="{% static 'assets/login/login.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <main class="form-signin text-center">
+        <form method="post">
+            {% csrf_token %}
+
+            <img class="mb-4" src="{% static 'assets/img/logo_principal_sin_bg.png' %}" alt="logo" style="height: 142px;width: 241px;">
+            <h1 class="h3 mb-3 fw-normal">Ingreso</h1>
+            {% bootstrap_form form layout="floating" %}
+            {% comment %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="form-floating">
+                    {{ field.errors }}
+                    {{ field.label_tag }} {{ field }}
+                    {% if field.help_text %}
+                        <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            {% endcomment %}
+            {% comment %}
+            <div class="form-floating">
+                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <label for="floatingInput">Email address</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                <label for="floatingPassword">Password</label>
+            </div>
+
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="remember-me"> Remember me
+                </label>
+            </div>
+            {% endcomment %}
+            {% bootstrap_button button_type="submit" content="Ingresar" %}
+            {% comment %}<button class="w-100 btn btn-lg btn-primary" type="submit">Ingresar</button>{% endcomment %}
+            <input type="hidden" name="next" value="{{ next }}">
+            {% if form.errors %}
+                <p>Su usuario y contraseña no coinciden. Por favor intente de nuevo.</p>
+            {% endif %}
+            {% if next %}
+                {% if user.is_authenticated %}
+                    <p>Su cuenta no tiene permisos suficientes para ver esta pagina. Para proceder,
+                        por favor ingrese con una cuenta que tenga ese acceso.</p>
+                {% else %}
+                    <p>Por favor ingrese para ver esta página.</p>
+                {% endif %}
+            {% endif %}
+        </form>
+        {# Assumes you setup the password_reset view in your URLconf #}
+        <p><a href="{% url 'password_reset' %}">Olvidó su contraseña?</a></p>
+    </main>
+{% endblock %}

@@ -1,0 +1,179 @@
+[
+    {
+        "model": "inspecciones.organizacion",
+        "pk": 2,
+        "fields": {
+            "nombre": "gomac2",
+            "logo": "blank.jpg",
+            "link": "",
+            "acerca": "",
+            "caracteristicas": "reparaciones"
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 4,
+        "fields": {
+            "password": "pbkdf2_sha256$260000$DiSKXLQRjtz1B5qjYsx50F$zFnR55ySO3BBGw14gCm/WHL/wyOLnEo0AGy5W9QC+V8=",
+            "last_login": "2021-11-25T19:56:41.834Z",
+            "is_superuser": false,
+            "username": "gato2",
+            "first_name": "administrador",
+            "last_name": "",
+            "email": "",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2021-11-16T15:01:19.315Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "inspecciones.perfil",
+        "pk": 4,
+        "fields": {
+            "user": 4,
+            "celular": "123",
+            "organizacion": 2,
+            "foto": "blank.jpg",
+            "rol": "administrador"
+        }
+    },
+    {
+        "model": "inspecciones.etiquetajerarquicadeactivo",
+        "pk": "modelo",
+        "fields": {
+            "json": {
+                "niveles": [
+                    "modelo"
+                ],
+                "arbol": [
+                    {
+                        "valor": "2019",
+                        "children": []
+                    },
+                    {
+                        "valor": "2020",
+                        "children": []
+                    },
+                    {
+                        "valor": "2021",
+                        "children": []
+                    }
+                ]
+            },
+            "organizacion": 2
+        }
+    },
+    {
+        "model": "inspecciones.etiquetadeactivo",
+        "pk": 3,
+        "fields": {
+            "clave": "modelo",
+            "valor": "2019"
+        }
+    },
+    {
+        "model": "inspecciones.etiquetadeactivo",
+        "pk": 4,
+        "fields": {
+            "clave": "modelo",
+            "valor": "2020"
+        }
+    },
+
+    {
+        "model": "inspecciones.cuestionario",
+        "pk": "6ea6b54f-3035-4b18-8e04-4cfee6c8f8e2",
+        "fields": {
+            "tipo_de_inspeccion": "cuestionario3",
+            "version": 1,
+            "estado": "finalizado",
+            "periodicidad_dias": 5,
+            "organizacion": 2,
+            "creador": 4,
+            "momento_subida": "2021-11-25T00:53:04.811Z",
+            "etiquetas_aplicables": [
+                3,
+                4
+            ]
+        }
+    },
+    {
+        "model": "inspecciones.bloque",
+        "pk": "2cc08905-99bc-4482-b05c-1315f72a8cc5",
+        "fields": {
+            "n_orden": 0,
+            "cuestionario": "6ea6b54f-3035-4b18-8e04-4cfee6c8f8e2"
+        }
+    },
+    {
+        "model": "inspecciones.bloque",
+        "pk": "44fbd5b7-3e0b-4923-98c7-4a702705e762",
+        "fields": {
+            "n_orden": 1,
+            "cuestionario": "6ea6b54f-3035-4b18-8e04-4cfee6c8f8e2"
+        }
+    },
+    {
+        "model": "inspecciones.titulo",
+        "pk": "10a3d2b3-50d4-4fb7-84cf-1688c9e8dbc7",
+        "fields": {
+            "bloque": "2cc08905-99bc-4482-b05c-1315f72a8cc5",
+            "titulo": "titulo1",
+            "descripcion": ""
+        }
+    },
+    {
+        "model": "inspecciones.pregunta",
+        "pk": "a9e33b36-dae2-4079-8b48-8e35b5f2620b",
+        "fields": {
+            "titulo": "pregunta1",
+            "descripcion": "",
+            "criticidad": 2,
+            "bloque": "44fbd5b7-3e0b-4923-98c7-4a702705e762",
+            "cuadricula": null,
+            "tipo_de_pregunta": "seleccion_unica",
+            "tipo_de_cuadricula": null,
+            "unidades": null,
+            "etiquetas": [
+                1,
+                2
+            ]
+        }
+    },
+    {
+        "model": "inspecciones.opcionderespuesta",
+        "pk": "719d3b81-c420-412b-a213-78efdd1da34d",
+        "fields": {
+            "titulo": "respuesta3",
+            "descripcion": "",
+            "criticidad": 0,
+            "requiere_criticidad_del_inspector": false,
+            "pregunta": "a9e33b36-dae2-4079-8b48-8e35b5f2620b"
+        }
+    },
+    {
+        "model": "inspecciones.opcionderespuesta",
+        "pk": "719d3b81-c420-412b-a213-78efdd1da34a",
+        "fields": {
+            "titulo": "respuesta2",
+            "descripcion": "",
+            "criticidad": 2,
+            "requiere_criticidad_del_inspector": true,
+            "pregunta": "a9e33b36-dae2-4079-8b48-8e35b5f2620b"
+        }
+    },
+    {
+        "model": "inspecciones.opcionderespuesta",
+        "pk": "9301b774-190d-48d9-a6e4-bf4b9582ecbd",
+        "fields": {
+            "titulo": "respuesta1",
+            "descripcion": "",
+            "criticidad": 1,
+            "requiere_criticidad_del_inspector": false,
+            "pregunta": "a9e33b36-dae2-4079-8b48-8e35b5f2620b"
+        }
+    }
+
+]

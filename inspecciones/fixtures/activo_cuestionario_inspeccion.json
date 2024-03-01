@@ -1,0 +1,194 @@
+[
+    {
+        "model": "inspecciones.etiquetajerarquicadeactivo",
+        "pk": "color",
+        "fields": {
+            "json": {
+                "niveles": [
+                    "color"
+                ],
+                "arbol": [
+                    {
+                        "valor": "amarillo",
+                        "children": []
+                    },
+                    {
+                        "valor": "azul",
+                        "children": []
+                    },
+                    {
+                        "valor": "rojo",
+                        "children": []
+                    }
+                ]
+            },
+            "organizacion": 1
+        }
+    },
+    {
+        "model": "inspecciones.etiquetajerarquicadepregunta",
+        "pk": "sistema",
+        "fields": {
+            "json": {
+                "niveles": [
+                    "sistema",
+                    "subsistema"
+                ],
+                "arbol": [
+                    {
+                        "valor": "motor",
+                        "children": [
+                            {
+                                "valor": "bomba",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "valor": "chasis",
+                        "children": []
+                    }
+                ]
+            },
+            "organizacion": 1
+        }
+    },
+    {
+        "model": "inspecciones.etiquetadeactivo",
+        "pk": 1,
+        "fields": {
+            "clave": "color",
+            "valor": "amarillo"
+        }
+    },
+    {
+        "model": "inspecciones.etiquetadeactivo",
+        "pk": 2,
+        "fields": {
+            "clave": "color",
+            "valor": "azul"
+        }
+    },
+    {
+        "model": "inspecciones.activo",
+        "pk": 1,
+        "fields": {
+            "identificador": "123",
+            "organizacion": 1,
+            "etiquetas": [
+                1
+            ]
+        }
+    },
+    {
+        "model": "inspecciones.cuestionario",
+        "pk": "6ea6b54f-3035-4b18-8e04-4cfee6c8f8e1",
+        "fields": {
+            "tipo_de_inspeccion": "cuestionario2",
+            "version": 1,
+            "periodicidad_dias": 1,
+            "organizacion": 1,
+            "creador": 1,
+            "estado": "finalizado",
+            "momento_subida": "2021-11-25T00:53:04.811Z",
+            "etiquetas_aplicables": [
+                1,
+                2
+            ]
+        }
+    },
+    {
+        "model": "inspecciones.bloque",
+        "pk": "2cc08905-99bc-4482-b05c-1315f72a8cc4",
+        "fields": {
+            "n_orden": 0,
+            "cuestionario": "6ea6b54f-3035-4b18-8e04-4cfee6c8f8e1"
+        }
+    },
+    {
+        "model": "inspecciones.bloque",
+        "pk": "44fbd5b7-3e0b-4923-98c7-4a702705e761",
+        "fields": {
+            "n_orden": 1,
+            "cuestionario": "6ea6b54f-3035-4b18-8e04-4cfee6c8f8e1"
+        }
+    },
+    {
+        "model": "inspecciones.titulo",
+        "pk": "10a3d2b3-50d4-4fb7-84cf-1688c9e8dbc6",
+        "fields": {
+            "bloque": "2cc08905-99bc-4482-b05c-1315f72a8cc4",
+            "titulo": "titulo1",
+            "descripcion": ""
+        }
+    },
+    {
+        "model": "inspecciones.etiquetadepregunta",
+        "pk": 1,
+        "fields": {
+            "clave": "sistema",
+            "valor": "motor"
+        }
+    },
+    {
+        "model": "inspecciones.etiquetadepregunta",
+        "pk": 2,
+        "fields": {
+            "clave": "subsistema",
+            "valor": "bomba"
+        }
+    },
+    {
+        "model": "inspecciones.pregunta",
+        "pk": "a9e33b36-dae2-4079-8b48-8e35b5f2620a",
+        "fields": {
+            "titulo": "pregunta1",
+            "descripcion": "",
+            "criticidad": 2,
+            "bloque": "44fbd5b7-3e0b-4923-98c7-4a702705e761",
+            "cuadricula": null,
+            "tipo_de_pregunta": "seleccion_unica",
+            "tipo_de_cuadricula": null,
+            "unidades": null,
+            "etiquetas": [
+                1,
+                2
+            ]
+        }
+    },
+    {
+        "model": "inspecciones.opcionderespuesta",
+        "pk": "719d3b81-c420-412b-a213-78efdd1da349",
+        "fields": {
+            "titulo": "respuesta3",
+            "descripcion": "",
+            "criticidad": 0,
+            "requiere_criticidad_del_inspector": false,
+            "pregunta": "a9e33b36-dae2-4079-8b48-8e35b5f2620a"
+        }
+    },
+    {
+        "model": "inspecciones.opcionderespuesta",
+        "pk": "719d3b81-c420-412b-a213-78efdd1da348",
+        "fields": {
+            "titulo": "respuesta2",
+            "descripcion": "",
+            "criticidad": 2,
+            "requiere_criticidad_del_inspector": true,
+            "pregunta": "a9e33b36-dae2-4079-8b48-8e35b5f2620a"
+        }
+    },
+    {
+        "model": "inspecciones.opcionderespuesta",
+        "pk": "9301b774-190d-48d9-a6e4-bf4b9582ecbc",
+        "fields": {
+            "titulo": "respuesta1",
+            "descripcion": "",
+            "criticidad": 1,
+            "requiere_criticidad_del_inspector": false,
+            "pregunta": "a9e33b36-dae2-4079-8b48-8e35b5f2620a"
+        }
+    }
+
+
+]

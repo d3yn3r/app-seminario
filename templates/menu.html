@@ -1,0 +1,76 @@
+{% load static %}
+<header>
+    <div class="px-3 py-2 text-white text-center menu">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
+                    <img src="{% static 'assets/img/logo_limpio_sin_bg.png' %}" style="height: 36px;width: 46px;"
+                         alt="logo_gomac">
+                </a>
+
+
+                <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                    <li>
+                        <a href="{% url "mi-organizacion" %}" class="nav-link text-white">
+                            <i class="bi d-block mx-auto mb-1 bi-house"></i>
+                            {{ request.user.perfil.organizacion.nombre }}
+                        </a>
+                    </li>
+                    <!--
+                        <li>
+                            <a href="#" class="nav-link text-white">
+                                <i class="bi d-block mx-auto mb-1 bi-speedometer2"></i>
+                                Panel
+                            </a>
+                        </li>
+                    -->
+                    <li>
+                        <a href="{% url "inspeccion-list" %}" class="nav-link text-white">
+                            <i class="bi d-block mx-auto mb-1 bi-table"></i>
+                            Inspecciones
+                        </a>
+                    </li>
+                <li>
+                        <a href="{% url "activo-list" %}" class="nav-link text-white">
+                            <i class="bi d-block mx-auto mb-1 bi-box"></i>
+                            Activos
+                        </a>
+                    </li>
+                    {% if request.user.is_staff %}
+                        <li>
+                            <a href="{% url "organizacion-list" %}" class="nav-link text-white">
+                                <i class="bi d-block mx-auto mb-1 bi-grid"></i>
+                                Organizaciones
+                            </a>
+                        </li>
+                    {% endif %}
+                <li>
+                        <a href="http://shepherdator.ddns.net:81/" class="nav-link text-white">
+                            <i class="bi d-block mx-auto mb-1 bi-window"></i>
+                            app version web
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/static/app-release.apk" class="nav-link text-white">
+                            <i class="bi d-block mx-auto mb-1 bi-download"></i>
+                            descargar app
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="nav-link text-white">
+                            <i class="bi d-block mx-auto mb-1 bi-person-circle"></i>
+                            {{ request.user }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}" class="nav-link text-white">
+                            <i class="bi d-block mx-auto mb-1 bi-box-arrow-right"></i>
+                            Salir
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>

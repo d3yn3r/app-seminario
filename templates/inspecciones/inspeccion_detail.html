@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load gomac_tags %}
+{% block title %}Inspeccion{% endblock %}
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.bootstrap4.min.css"/>
+
+    <style>
+        .accordion-button::after {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='%23333' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill-rule='evenodd' d='M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z' clip-rule='evenodd'/%3e%3c/svg%3e");
+            transform: scale(.7) !important;
+        }
+
+        .accordion-button:not(.collapsed)::after {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='%23333' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill-rule='evenodd' d='M0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H1a1 1 0 0 1-1-1z' clip-rule='evenodd'/%3e%3c/svg%3e");
+        }
+
+        .smallRow {
+            width: 30%;
+            background-color: rgba(114, 163, 141, 0.2) !important;
+        }
+
+        .dot {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .bigRow {
+            width: 70%
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="text-center mt-2 mb-5">
+            <div class="text title"><h5>Inspección {{ inspeccion.cuestionario.tipo_de_inspeccion }}</h5></div>
+        </div>
+        <div class="col-2 col-12 col-sm-4">
+            <details>
+                <summary><strong>Datos de la inspección</strong></summary>
+                <table class="table table-bordered  small table-responsive-sm table-condensed shadow ">
+
+                    <tbody>
+                    <!-- Hacer pdf -->
+                    {% if inspeccion.activo.flota == "RENTING" %}
+                        <tr>
+                            <td class="smallRow"></td>
+                            <td class="bigRow"><a class="alert-link"
+                                                  href="{% url 'export_pdf' inspeccion.id %}">Ver pdf</a>
+                            </td>
+                        </tr>{% endif %}
+                    <tr>
+                        <td class="smallRow">Control</td>
+                        <td class="bigRow">{{ inspeccion.activo }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="smallRow"> Momento inicio:</td>
+                        <td> {{ inspeccion.momento_inicio|date:"d-M-Y P" }} </td>
+                    </tr>
+                    <tr>
+                        <td class="smallRow"> Momento fin:</td>
+                        {% if inspeccion.momento_finalizacion == None %}
+                            <td> No aplica</td>
+                        {% else %}
+                            <td> {{ inspeccion.momento_finalizacion|date:"d-M-Y P" }}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+
+                        <td class="smallRow">Técnico:</td>
+                        <td class="bigRow">{{ inspeccion.inspector.user.get_full_name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="smallRow">Etiquetas cuestionario:</td>
+                        <td class="bigRow">{% for etiqueta in inspeccion.cuestionario.etiquetas_aplicables.all %}
+                            <li>{{ etiqueta.clave }}: {{ etiqueta.valor }}</li>
+                        {% endfor %}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </details>
+        </div>
+
+        <div class="mt-5">
+            <ul class="nav nav-tabs justify-content-center" id="infoNovedades" role="tablist">
+                <li class="nav-item  justify-content-between align-items-start">
+                    <button class="nav-link active" id="pendientes-tab" data-bs-toggle="tab"
+                            data-bs-target="#pendientes"
+                            type="button"
+                            role="tab" aria-controls="pendientes" aria-selected="true">
+                        <div class="ms-2 me-auto">
+                            <div>Pendientes
+                                <span class="ms-1 badge rounded-pill bg-danger">{{ grupos.pendiente }}</span>
+                            </div>
+
+
+                        </div>
+
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reparadas-tab" data-bs-toggle="tab" data-bs-target="#reparadas"
+                            type="button"
+                            role="tab" aria-controls="reparadas" aria-selected="false">
+                        <div class="ms-2 me-auto">
+                            <div>Reparadas
+                                <span class="badge ms-1 rounded-pill bg-warning text-dark">{{ grupos.reparadas }}</span>
+                            </div>
+
+                        </div>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="sinNovedad-tab" data-bs-toggle="tab" data-bs-target="#sinNovedad"
+                            type="button"
+                            role="tab" aria-controls="sinNovedad" aria-selected="false">
+                        <div class="ms-2 me-auto">
+                            <div>Sin novedad
+                                <span class="badge ms-1 rounded-pill bg-success">{{ grupos.sinNovedad }}</span></div>
+
+                        </div>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="todas-tab" data-bs-toggle="tab" data-bs-target="#todas"
+                            type="button"
+                            role="tab" aria-controls="todas" aria-selected="false">
+                        <div class="ms-2 me-auto">
+                            <div>Todas
+                                <span class="badge ms-1 rounded-pill bg-info text-dark">{{ grupos.todas }}</span></div>
+
+                        </div>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="container justify-content-center mx-auto">
+
+            <div class="tab-content " id="infoNovedadesContent">
+                <div class="tab-pane fade show active" id="pendientes"
+                     role="tabpanel" aria-labelledby="pendientes-tab">
+                    {% get_filtro 'pendientes' as pendientes %}
+                    {% include 'inspecciones/card_template.html' with respuestas=pendientes filtro='pendientes' %}
+                </div>
+                <div class="tab-pane fade" id="reparadas" role="tabpanel" aria-labelledby="reparadas-tab">
+                    {% get_filtro 'reparadas' as reparadas %}
+                    {% include 'inspecciones/card_template.html' with respuestas=reparadas filtro='reparadas' %}
+
+                </div>
+                <div class="tab-pane fade" id="sinNovedad" role="tabpanel" aria-labelledby="sinNovedad-tab">
+                    {% get_filtro 'sinNovedad' as sinNovedad %}
+                    {% include 'inspecciones/card_template.html' with respuestas=sinNovedad filtro='sinNovedad' %}
+                </div>
+                <div class="tab-pane fade" id="todas" role="tabpanel" aria-labelledby="todas-tab">
+
+                    {% include 'inspecciones/card_template.html' with respuestas=respuestas filtro='todas' %}
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.11.3/b-2.0.1/b-html5-2.0.1/datatables.min.js">
+    </script>
+
+{% endblock %}

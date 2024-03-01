@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %}organizaciones{% endblock %}
+{% block extra_head %}
+    <link href="{% static 'assets/organizaciones/organizaciones.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+    <div class="card card-gomac">
+        <h5 class="card-header">Organizaciones</h5>
+        <div class="list-group list-group-flush">
+            {% for organizacion in organizacion_list %}
+                <div class="list-group-item list-group-item-action d-flex gap-3 py-3">
+                    <img src="{{ organizacion.logo.url }}" alt="logo" width="32" height="32"
+                         class="rounded-circle flex-shrink-0">
+                    <div class="d-flex gap-2 w-100 justify-content-between">
+                        <a class="text-reset text-decoration-none" href="{% url "organizacion-detail" organizacion.id %}">
+                            <h6 class="mb-0">{{ organizacion.nombre }}</h6>
+                            <p class="mb-0 opacity-75">{{ organizacion.acerca }}</p>
+                        </a>
+                        <div>
+                            <a class="btn btn-primary btn-sm" href="{% url "organizacion-update" organizacion.id %}">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a class="btn btn-danger btn-sm" href="{% url "organizacion-delete" organizacion.id %}">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            <small class="opacity-50 text-nowrap">1</small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="card-body text-end">
+            <a class="btn btn-primary" href="{% url "organizacion-add" %}" role="button">nueva</a>
+        </div>
+    </div>
+{% endblock %}

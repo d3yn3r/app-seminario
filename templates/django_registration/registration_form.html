@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %}registro{% endblock %}
+{% block extra_head %}
+
+{% endblock %}
+
+{% block content %}
+    <main class="container d-flex justify-content-center text-center">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <img class="mb-4" src="{% static 'assets/img/logo_principal_sin_bg.png' %}" alt="logo" style="height: 142px;width: 241px;">
+            <h1 class="h3 mb-3 fw-normal">Registro</h1>
+            {% bootstrap_form form_user layout="floating" %}
+            {% bootstrap_form form_perfil layout="floating" %}
+            {% bootstrap_button button_type="submit" content="Registrarse" %}
+
+        </form>
+    </main>
+{% endblock %}

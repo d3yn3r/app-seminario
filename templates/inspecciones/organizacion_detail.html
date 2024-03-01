@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% load gomac_tags %}
+{% block title %}{{ organizacion.nombre }}{% endblock %}
+{% block content %}
+    <div class="container container-fluid">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-3">
+            <div class="d-block mb-4 mb-md-0">
+                <h2 class="h4">{{ organizacion.nombre }}</h2>
+            <p class="mb-0">{{ organizacion.acerca }}</p></div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            {% if request.user.perfil.rol != 'inspector' %}
+                <a href="{% url 'organizacion-update' organizacion.id %}"
+                   class="btn btn-sm btn-primary d-inline-flex align-items-center">
+                    <i class="bi bi-pencil"></i>
+                    Editar
+                </a>
+            {% endif %}
+            {% comment %}
+            <div class="btn-group ms-2 ms-lg-3">
+                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+            </div>
+            {% endcomment %}
+        </div>
+        </div>
+        <div class="row">
+            <div class="card-group d-flex justify-content-center">
+                <div class="col col-sm-2 me-3">
+                    <div class="card">
+                        <div class="card-body ">
+                            <h6 class="card-title">#Inspecciones realizadas</h6>
+                            <h2 class="card-text text-center">{{ inspecciones.total }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-sm-2 me-3">
+                    <div class="card">
+                        <div class="card-body ">
+                            <h6 class="card-title">#Inspecciones sin novedad</h6>
+                            <h2 class="card-text text-center">{{ inspecciones.sinNovedad }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-sm-2 me-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">#Inspecciones atrasadas</h6>
+                            <h2 class="card-text text-center">{{ inspecciones.atrasadas }}</h2>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-sm-2">
+                    <div class="card">
+                        <div class="card-body ">
+                            <h6 class="card-title">Promedio criticidad inspecciones</h6>
+                            <h2 class="card-text text-center">{{ inspecciones.promedio.criticidad_calculada__avg|floatformat:"2" }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div id="rowChart" class=" row mt-5 " data-url="{% url 'chart_data' %}">
+            <figure class="highcharts-figure col-4">
+                <div class="card " id="estado"></div>
+            </figure>
+            <figure class="highcharts-figure col-4">
+                <div class="card " id="criticidad"></div>
+            </figure>
+            <figure class="highcharts-figure col-4">
+                <div class="card " id="reparaciones"></div>
+            </figure>
+        </div>
+        <div class="row text-center d-flex justify-content-center">
+            <div class="col-6 col-xxl-6 mb-4">
+                <div class="card border-0 shadow">
+                    <h5 class="card-header">Integrantes</h5>
+                    <div class="list-group list-group-flush">
+                        {% for usuario in organizacion.usuarios.all %}
+                            <div class="list-group-item list-group-item-action d-flex gap-3 py-3">
+                                <img src="{{ usuario.foto.url }}" alt="foto" width="32" height="32"
+                                     class="rounded-circle flex-shrink-0">
+                                <div class="d-flex gap-2 w-100 justify-content-between">
+                                    <a class="text-reset text-decoration-none"
+                                       href="#">
+                                    <h6 class="mb-0">{{ usuario.user.get_full_name }}</h6>
+                                    <p class="mb-0 opacity-75">{{ usuario.rol }}</p>
+                                </a>
+                                {% if request.user.perfil.rol != 'inspector' %}
+                                    <div>
+                                        <a class="btn btn-primary btn-sm" href="{% url "usuario-update" usuario.id %}">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a class="btn btn-danger btn-sm" href="{% url "usuario-delete" usuario.id %}">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="card-body text-end">
+                    {% if request.user.perfil.rol != 'inspector' %}
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#invitarModal">
+                            Invitar
+                        </button>
+                    {% endif %}
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="invitarModal" tabindex="-1" aria-labelledby="invitarModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="invitarModalLabel">Invitar a un nuevo usuario</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <span>Comparte el siguiente enlace con la persona para que se registre en tu organización:</span>
+                                    <input type="text" readonly class="form-control"
+                                           value="{% abs_url 'registro' %}?org={{ organizacion.id }}"
+                                           id="link">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" onclick="copiarLinkRegistro()">
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+            <div class="col-5 col-xxl-6 mb-4">
+                <div class="card border-0 shadow">
+                    <h5 class="card-header">Caracteristicas activas</h5>
+
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for caracteristica in caracteristicas %}
+                            <li class="list-group-item px-0">
+                                <div class="row align-items-center">
+                                    <div class="col-auto ms--2">
+                                        <h4 class="h6 mb-0"><a href="#">{{ caracteristica }}</a></h4>
+                                        <div class="d-flex align-items-center">
+                                            {% if caracteristica in organizacion.caracteristicas %}
+                                                <div class="bg-success dot rounded-circle me-1"></div>
+                                                <small>Activa</small>
+                                            {% else %}
+                                                <div class="bg-danger dot rounded-circle me-1"></div>
+                                                <small>Inactiva</small>
+                                            {% endif %}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        $.ajax({
+            url: $("#rowChart").attr("data-url"),
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                Highcharts.chart("estado", data[0]);
+                Highcharts.chart("criticidad", data[1]);
+                Highcharts.chart("reparaciones", data[2]);
+            }
+        });
+    </script>
+    <script>
+        function copiarLinkRegistro() {
+            /* Get the text field */
+            const copyText = document.getElementById("link");
+
+            /* Select the text field */
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+            try {
+                /* Copy the text inside the text field */
+                navigator.clipboard.writeText(copyText.value);
+            } catch (err) {
+                try {
+                    var successful = document.execCommand('copy');
+                    var msg = successful ? 'successful' : 'unsuccessful';
+                } catch (err) {
+                    console.log('Oops, no se pudo copiar');
+                }
+            }
+
+
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,155 @@
+{% load gomac_tags %}
+{% for respuesta in respuestas %}
+    {% get_subRespuestas respuesta filtro as detalleRespuesta %}
+    {% if respuesta.tipo_de_respuesta == 'cuadricula' %}
+        {% include 'inspecciones/card_template.html' with respuestas=detalleRespuesta.subRespuestas filtro=filtro %}
+    {% else %}
+        <div class="row mt-3 justify-content-center text-center ">
+            <div class="card w-80 border-card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% if respuesta.respuesta_cuadricula is not None %}
+                            {{ respuesta.respuesta_cuadricula.pregunta }}:
+                        {% endif %}
+                        {{ respuesta.pregunta }}</h5>
+                    <p class="card-subtitle mb-2 text-muted">
+                        {% if respuesta.pregunta.descripcion %}{{ respuesta.pregunta.descripcion }}<br>{% endif %}
+
+                        Etiquetas:
+                        {% for etiqueta in  respuesta.pregunta.etiquetas.all %}
+                            {{ etiqueta }},
+                        {% endfor %}
+                    </p>
+                    <div class="accordion" id="accordion{{ respuesta.id }}">
+                        {% if respuesta.tipo_de_respuesta == 'cuadricula' %}
+                            {% for subRespuesta in detalleRespuesta.subRespuestas %}
+
+                            {% endfor %}
+                        {% else %}
+                            {% for subRespuesta in detalleRespuesta.subRespuestas %}
+                                {% get_respuesta subRespuesta as respuestaDada %}
+                                <div class="accordion-item">
+                                    <div class="accordion-header  " id="heading{{ subRespuesta.id }}">
+
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#collapse{{ subRespuesta.id }}"
+                                                aria-expanded="false"
+                                                aria-controls="collapse{{ subRespuesta.id }}">
+
+
+                                        <span class="badge mx-2 rounded-pill
+                                            {% if subRespuesta.criticidad_calculada == 0 %} bg-success
+                                            {% elif subRespuesta.reparado %} bg-warning text-dark
+                                            {% else %} bg-danger
+                                            {% endif %}">
+                                            {{ subRespuesta.criticidad_calculada_con_reparaciones }}
+                                        </span>
+                                            {{ respuestaDada.opcion }}
+
+
+                                        </button>
+                                    </div>
+                                    <div id="collapse{{ subRespuesta.id }}" class="accordion-collapse collapse"
+                                         aria-labelledby="heading{{ subRespuesta.id }}"
+                                         data-bs-parent="#accordion{{ respuesta.id }}">
+
+                                        <div class="container accordion-body">
+                                            <div class="row row-cols-2">
+                                                <div class="col">Criticidad
+                                                    pregunta: {{ respuesta.pregunta.criticidad }}</div>
+                                                <div class="col">Criticidad
+                                                    total: {{ subRespuesta.criticidad_calculada }}
+                                                </div>
+
+                                            </div>
+                                            <div class="row row-cols-2">
+
+                                                <div class="col">Criticidad
+                                                    respuesta: {{ respuestaDada.criticidad }}</div>
+                                                <div class="col">Criticidad
+                                                    con
+                                                    reparaciones: {{ subRespuesta.criticidad_calculada_con_reparaciones }}
+                                                </div>
+
+                                            </div>
+                                            <div class="row row-cols-2">
+
+                                                <div class="col">Criticidad
+                                                    inspector:
+                                                    {% if subRespuesta.criticidad_del_inspector is not None %}
+                                                        {{ subRespuesta.criticidad_del_inspector }}
+                                                    {% else %}
+                                                        No aplica
+                                                    {% endif %}
+                                                </div>
+
+                                                <div class="col">Estado:
+                                                    {% if subRespuesta.criticidad_calculada == 0 %}
+                                                        <span class="badge mx-2 rounded-pill bg-success"> Sin novedad </span>
+                                                    {% elif subRespuesta.reparado %}
+                                                        <span class="badge mx-2 rounded-pill bg-warning text-dark"> Reparada </span>
+                                                    {% else %}
+                                                        <span class="badge mx-2 rounded-pill bg-danger">Pendiente</span>
+                                                    {% endif %}
+
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+                                        {% if subRespuesta.observacion or subRespuesta.fotos_base|length > 0 %}
+                                            <h5 class="card-title">Información respuesta</h5>
+                                            {% if subRespuesta.observacion %}
+                                                Observación: {{ subRespuesta.observacion }}
+                                                <br>
+                                            {% endif %}
+                                            {% if subRespuesta.fotos_base|length > 0 %}
+
+                                                {% for foto in subRespuesta.fotos_base %}
+                                                    <div style="display: inline">
+                                                        <a href="{{ foto.foto.url }}" target="_blank">
+                                                            <img src="{{ foto.foto.url }}"
+                                                                 class="img-thumbnail img-responsive"
+                                                                 style="width: 30%"/>
+                                                        </a>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if subRespuesta.reparado %}
+                                            <h5 class="card-title">Información reparación</h5>
+                                            {% if subRespuesta.observacion_reparacion %}
+                                                Observación: {{ subRespuesta.observacion_reparacion }}
+                                                <br>
+                                            {% endif %}
+                                            {% if subRespuesta.fotos_reparacion|length > 0 %}
+
+                                                {% for foto in subRespuesta.fotos_reparacion %}
+                                                    <div style="display: inline">
+                                                        <a href="{{ foto.foto.url }}" target="_blank">
+                                                            <img src="{{ foto.foto.url }}"
+                                                                 class="img-thumbnail img-responsive"
+                                                                 style="width: 30%"/>
+                                                        </a>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    Criticidad total pregunta: {{ respuesta.criticidad_calculada_con_reparaciones }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+{% endfor %}

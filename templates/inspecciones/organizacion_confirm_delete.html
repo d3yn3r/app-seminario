@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% block title %}borrar {{ organizacion.nombre }}{% endblock %}
+{% block content %}
+    <form class="card card-gomac" method="post">
+        {% csrf_token %}
+        <h5 class="card-header">Eliminar {{ organizacion.nombre }}</h5>
+        <div class="card-body">
+            <h5 class="card-title">Está seguro de eliminar {{ organizacion.nombre }}?</h5>
+            <p class="card-text">Se eliminaran todos los datos relacionados con esta organizacion.</p>
+            {% bootstrap_button "si" button_type="submit" button_class="btn-danger" %}
+            {% bootstrap_button "no" button_type="link" href="../../" button_class="btn-primary"  %}
+        </div>
+
+    </form>
+
+{% endblock %}

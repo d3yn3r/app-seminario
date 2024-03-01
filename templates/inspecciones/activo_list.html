@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}activos{% endblock %}
+{% block extra_head %}
+    <link href="{% static 'assets/activos/activos.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-12 col-xxl-6 mb-4">
+            <div class="card border-0 shadow">
+                <h5 class="card-header">Planeacion</h5>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for activo in activo_list %}
+                            <li class="list-group-item px-0">
+                                <div class="row align-items-center">
+                                    <div class="cuestionario-box ms--2">
+                                        <h4 class="h6 mb-0"><a href="#">{{ activo.identificador }}</a></h4>
+                                    </div>
+                                    {% for cuestionario in activo.estado_planeacion_por_cuestionario %}
+                                        <div class="cuestionario-box ms--2">
+                                            <h4 class="h6 mb-0">{{ cuestionario.cuestionario }}</h4>
+                                            <div class="d-flex align-items-center">
+                                                {% if cuestionario.retraso > 1 %}
+                                                    <div class="bg-danger dot rounded-circle me-1"></div>
+                                                    <small data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                                           title="{{ cuestionario.ultima_inspeccion.momento_finalizacion }}">
+                                                        Retraso {{ cuestionario.retraso }} dias
+                                                    </small>
+                                                {% else %}
+                                                    <div class="bg-success dot rounded-circle me-1"></div>
+                                                    <small data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                                           title="{{ cuestionario.ultima_inspeccion.momento_finalizacion }}">
+                                                        A tiempo
+                                                    </small>
+                                                {% endif %}
+
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_script %}
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+{% endblock %}

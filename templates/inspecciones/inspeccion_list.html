@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Lista de Inspecciones{% endblock %}
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.11.3/b-2.0.1/b-html5-2.0.1/datatables.min.css"/>
+{% endblock %}
+{% block content %}
+    <div class="container ">
+
+        <a class="text-right btn btn-sm btn-success" href="{% url 'descargar_inspecciones' %}"> Reporte </a>
+        <div class="text-center mt-2 mb-5">
+            <div class="text title"><h5>Lista de inspecciones</h5></div>
+        </div>
+
+        <div class="row row-content aling-items-center table-responsive">
+
+            <table class="table table-sm table-striped datatable" id="tablaPropiaFin">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th scope="col" class="text-center">Activo</th>
+                    <th scope="col" class="w-20 text-center">Tipo de inspección</th>
+                    <th scope="col" class="text-center">Fecha Fin</th>
+                    <th scope="col" class="w-20 text-center">Inspector</th>
+                    <th scope="col" class="text-center">Criticidad</th>
+                    <th scope="col" class="text-center">Criticidad con reparaciones</th>
+                    <th scope="col" class="text-center">Avance</th>
+                    <th scope="col" class="text-center">Código</th>
+
+                    <!--<th scope="col" class="text-center">OT preoperacional</th>-->
+                </tr>
+                </thead>
+                <tbody>
+                {% for inspeccion in inspeccion_list %}
+                    <tr class="text-center" id="{{ inspeccion.id }}">
+                        <td>
+                            <button type="button" class="btn btn-default text-center"
+                                    aria-label="Left Align"
+                                    onclick="expandir('{{ inspeccion.id }}','{% url 'inspeccion-detail' inspeccion.id %}',
+                                            '{{ inspeccion.momento_inicio }}', '{{ inspeccion.momento_finalizacion }}',)">
+                                <i class="bi bi-plus-circle"></i>
+                            </button>
+                        </td>
+                        <td class="text-center">{{ inspeccion.activo }}</td>
+                        <td>{{ inspeccion.cuestionario.tipo_de_inspeccion }}</td>
+                        <td>{{ inspeccion.momento_subida|date:'d/m/Y' }}</td>
+                        <td class="text-center">{{ inspeccion.inspector.user.get_full_name }}</td>
+                        <td class="text-center">{{ inspeccion.criticidad_calculada }}</td>
+                        <td class="text-center">{{ inspeccion.criticidad_calculada_con_reparaciones }}</td>
+                        <td class="text-center"> {{ inspeccion.get_avance }}%</td>
+                        <td class="text-center">{{ inspeccion.id }}</td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.11.3/b-2.0.1/b-html5-2.0.1/datatables.min.js">
+    </script>
+    <script>
+        function expandir(inspeccion_id, inspeccion_url, momentoInicio, momentoSubida) {
+            console.log('Estoy aqui')
+            const id = '#' + inspeccion_id.toString();
+            const tr = document.getElementById(inspeccion_id);
+            const row = table.row(tr);
+            if (row.child.isShown()) {
+                row.child.hide();
+                $(id).removeClass('shown');
+            } else {
+                row.child(format(inspeccion_url, momentoInicio, momentoSubida)).show();
+                $(id).addClass('shown');
+            }
+        }
+    </script>
+    <script>
+        function format(url_inspeccion, momentoInicio, momentoSubida) {
+            var momentoSubida1;
+
+            if (momentoSubida == 'None') {
+                momentoSubida1 = 'No aplica';
+            } else {
+                momentoSubida1 = momentoSubida;
+            }
+            return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+                '<tr>' +
+                '<td>Momento inicio:</td>' +
+                '<td>' + momentoInicio + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td> Momento finalización:</td>' +
+                '<td>' + momentoSubida1 + '</td>' +
+                '</tr>' +
+                '</table>' +
+                '<a class="btn btn-sm btn-info"  href="' + url_inspeccion + '">' + 'Ver inspección' + '</a>';
+        }</script>
+    <script>
+        $(document).ready(function () {
+            table = $('.datatable').DataTable({
+                paging: false,
+                language: {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sSearch": "Buscar:",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "sProcessing": "Procesando...",
+                },
+
+                responsive: "true",
+                initComplete: function () {
+
+                    this.api().columns([1, 2, 3]).every(function () {
+                        var column = this;
+                        var busqueda = $('<input class="form-control float-right"style="width: 100%; height: 30px" type="text" placeholder="Buscar" />').appendTo($(column.header())).on('keyup change clear', function () {
+                            if (column.search() !== this.value) {
+                                column
+                                    .search(this.value)
+                                    .draw();
+                            }
+                        });
+                        $(busqueda).click(function (e) {
+                            e.stopPropagation();
+                        });
+
+
+                    });
+                },
+            });
+
+        });
+
+    </script>
+{% endblock %}

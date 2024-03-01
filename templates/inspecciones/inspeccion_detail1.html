@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load gomac_tags %}
+{% block title %}Inspeccion{% endblock %}
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.bootstrap4.min.css"/>
+    <style>
+
+        .smallRow {
+            width: 30%;
+            background-color: rgba(114, 163, 141, 0.2) !important;
+        }
+
+        .dot {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .bigRow {
+            width: 70%
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="text-center mt-2 mb-5">
+            <div class="text title"><h5>Inspección {{ inspeccion.cuestionario.tipo_de_inspeccion }}</h5></div>
+        </div>
+        <div class="row row-cols-2">
+            <div class="col-2 col-12 col-sm-4">
+                <details>
+                    <summary><strong>Datos de la inspección</strong></summary>
+                    <table class="table table-bordered  small table-responsive-sm table-condensed shadow ">
+
+                        <tbody>
+                        <!-- Hacer pdf -->
+                        {% if inspeccion.activo.flota == "RENTING" %}
+                            <tr>
+                                <td class="smallRow"></td>
+                                <td class="bigRow"><a class="alert-link"
+                                                      href="{% url 'export_pdf' inspeccion.id %}">Ver pdf</a>
+                                </td>
+                            </tr>{% endif %}
+                        <tr>
+                            <td class="smallRow">Control</td>
+                            <td class="bigRow">{{ inspeccion.activo }}</td>
+                        </tr>
+
+                        <tr>
+                            <td class="smallRow"> Momento inicio:</td>
+                            <td> {{ inspeccion.momento_inicio|date:"d-M-Y P" }} </td>
+                        </tr>
+                        <tr>
+                            <td class="smallRow"> Momento fin:</td>
+                            {% if inspeccion.momento_finalizacion == None %}
+                                <td> No aplica</td>
+                            {% else %}
+                                <td> {{ inspeccion.momento_finalizacion|date:"d-M-Y P" }}</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+
+                            <td class="smallRow">Técnico:</td>
+                            <td class="bigRow">{{ inspeccion.inspector.user.get_full_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="smallRow">Etiquetas cuestionario:</td>
+                            <td class="bigRow">{% for etiqueta in inspeccion.cuestionario.etiquetas_aplicables.all %}
+                                <li>{{ etiqueta.clave }}: {{ etiqueta.valor }}</li>
+                            {% endfor %}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </details>
+            </div>
+            <div class="col-2 col-12 col-sm-4">
+                <div class="btn-group" id="infoNovedades">
+                    <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false" style="background-color: rgba(114, 163, 141, 0.2)">
+                        Información novedades
+                    </button>
+                    <div class="dropdown-menu">
+                        <li class="reparacion dropdown-item"
+                            style="cursor: pointer">
+                            <h7>
+                                 <span class="dot"
+                                       style="background-color: rgba(237,181,34,0.8);"></span>
+                                Total reparaciones realizadas: {{ grupos.reparadas }}
+                            </h7>
+                        </li>
+                        <li class="dropdown-item pendiente"
+                            style=" cursor: pointer">
+                            <h7>
+                                <span class="dot"
+                                      style="background-color: #db7205"></span>
+                                Total reparaciones pendientes: {{ grupos.pendiente }}
+                            </h7>
+                        </li>
+
+                        <li class="dropdown-item sinNovedad"
+                            style="cursor: pointer">
+                            <h7>
+                                <!--  <img src="https://img.icons8.com/emoji/24/000000/green-circle-emoji.png"/> -->
+                                <span class="dot"
+                                      style="background-color: #72a38d"></span> Total respuestas sin
+                                novedad: {{ grupos.sinNovedad }}
+                            </h7>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li class="dropdown-item todas"
+                            style="cursor: pointer">
+                            <h7>
+                                <span class="dot"
+                                      style="background-color:  rgba(114, 163, 141, 0.0)"></span>
+                                Ver inspección completa<br>
+                            </h7>
+                        </li>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row row-content  aling-items-center table-responsive">
+
+            <table class="table  table-sm small table-bordered" id="datatable">
+
+                <thead>
+                <th scope="col" class="text-center" colspan="3" style="background-color:rgba(114, 163, 141, 0.2) ">
+                    Cuestionario
+                </th>
+                <th scope="col" class="text-center" colspan="6" style="background-color:rgba(114, 163, 141, 0.5)">
+                    Inspección
+                </th>
+                <tr>
+                    <th scope="col" class="text-center" style="width: 15%">Pregunta</th>
+                    <th scope="col" class="text-center" style="width: 10%">Etiquetas</th>
+                    <th scope="col" class="text-center" style="width: 2%">Criticidad</th>
+                    <th scope="col" class="text-center" style="width: 17%">Respuesta</th>
+                    <th scope="col" class="text-center" style="width: 2%">Criticidad</th>
+                    <th scope="col" class="text-center" style="width: 17%">Reparación</th>
+                    <th scope="col" class="text-center" style="width: 2%">Criticidad con reparaciones</th>
+                    <th scope="col" class="text-center" style="width: 7%">Radicado actual</th>
+                    <th scope="col" class="text-center" style="width: 7%">Histórico Radicado</th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for respuestaPadre in respuestas %}
+                    {% cycle 'row1' 'row2' as rowClass %}
+                    {% include 'inspecciones/baseDetallePregunta.html' %}
+                    {% if respuestaPadre.pregunta.tipo_de_cuadricula == 'seleccion_multiple' %}
+                        {% get_subRespuestas respuestaPadre as detalleRespuesta %}
+                        {% for resp in detalleRespuesta.subRespuestas %}
+                            {% include 'inspecciones/baseDetallePregunta.html' with respuestaPadre=resp %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.11.3/b-2.0.1/b-html5-2.0.1/datatables.min.js">
+    </script>
+
+{% endblock %}
