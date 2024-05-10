@@ -3,7 +3,7 @@
         "model": "inspecciones.organizacion",
         "pk": 1,
         "fields": {
-            "nombre": "gomac",
+            "nombre": "inspecciones",
             "logo": "blank.jpg",
             "link": "",
             "acerca": "",
@@ -16,50 +16,14 @@
         "fields": {
             "password": "pbkdf2_sha256$260000$DiSKXLQRjtz1B5qjYsx50F$zFnR55ySO3BBGw14gCm/WHL/wyOLnEo0AGy5W9QC+V8=",
             "last_login": "2021-11-25T19:56:41.834Z",
-            "is_superuser": false,
-            "username": "gato",
-            "first_name": "administrador",
-            "last_name": "",
-            "email": "",
+            "is_superuser": true,
+            "username": "deyner",
+            "first_name": "Deyner",
+            "last_name": "Lopez",
+            "email": "deinerlp09@gmail.com",
             "is_staff": true,
             "is_active": true,
             "date_joined": "2021-11-16T15:01:19.315Z",
-            "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "auth.user",
-        "pk": 2,
-        "fields": {
-            "password": "pbkdf2_sha256$260000$fQIRg2FcDeh2rod3YGjehu$8qyJIc0oZVZikUT5PDMOeUrsxQFXgCsJe2vav7IQqUM=",
-            "last_login": null,
-            "is_superuser": false,
-            "username": "pyanez",
-            "first_name": "Paola",
-            "last_name": "Ayala",
-            "email": "cpyaneza@unal.edu.co",
-            "is_staff": true,
-            "is_active": true,
-            "date_joined": "2021-11-16T15:32:48.910Z",
-            "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "auth.user",
-        "pk": 3,
-        "fields": {
-            "password": "pbkdf2_sha256$260000$yKHWoDphaB3EaFkIJQVP86$IUA+Z9TvXnBt3p4we2cLGi6j5tUtfXR9WTV13jfEFl0=",
-            "last_login": null,
-            "is_superuser": false,
-            "username": "smaciasg",
-            "first_name": "Sebastián",
-            "last_name": "Macías",
-            "email": "smaciasg@unal.edu.co",
-            "is_staff": true,
-            "is_active": true,
-            "date_joined": "2021-11-16T15:33:42.026Z",
             "groups": [],
             "user_permissions": []
         }
@@ -70,28 +34,6 @@
         "fields": {
             "user": 1,
             "celular": "123",
-            "organizacion": 1,
-            "foto": "blank.jpg",
-            "rol": "administrador"
-        }
-    },
-    {
-        "model": "inspecciones.perfil",
-        "pk": 2,
-        "fields": {
-            "user": 2,
-            "celular": "3016237237",
-            "organizacion": 1,
-            "foto": "blank.jpg",
-            "rol": "administrador"
-        }
-    },
-    {
-        "model": "inspecciones.perfil",
-        "pk": 3,
-        "fields": {
-            "user": 3,
-            "celular": "3022155288",
             "organizacion": 1,
             "foto": "blank.jpg",
             "rol": "administrador"

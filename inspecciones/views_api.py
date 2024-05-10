@@ -17,7 +17,18 @@ from inspecciones.serializers import PerfilCreateSerializer, \
     InspeccionCompletaSerializer, PerfilSerializer, \
     SubirFotosCuestionarioSerializer, SubirFotosInspeccionSerializer, EtiquetaJerarquicaDeActivoSerializer, \
     EtiquetaJerarquicaDePreguntaSerializer
+from django.views.decorators.cache import never_cache
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 
+@never_cache
+def custom_logout(request):
+    """
+    Vista personalizada para cerrar sesión.
+    """
+    logout(request)
+    # Redirige a la página de inicio de sesión o a cualquier otra página que desees después de cerrar sesión.
+    return redirect('login')
 
 class OrganizacionViewSet(viewsets.ModelViewSet):
     queryset = Organizacion.objects.all()

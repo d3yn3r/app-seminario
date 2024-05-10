@@ -21,6 +21,26 @@ from django.http import HttpResponseRedirect
 from django.urls import path, include, reverse, reverse_lazy
 import inspecciones.urls
 import inspecciones.views
+from django.contrib.auth.views import LogoutView
+from inspecciones.views_api import custom_logout
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
+
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Inspeccion APP",
+      default_version='v1',
+      description="",
+      terms_of_service="https://www.google.com/policies/terms/",
+      contact=openapi.Contact(email="contact@example.com"),
+      license=openapi.License(name="BSD License"),
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
+
 
 
 def redirect_to_default(*args, **kwargs):
@@ -35,7 +55,7 @@ urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('accounts/register/', inspecciones.views.RegistrationView.as_view(), name="registro", ),
                   path('accounts/', include('django.contrib.auth.urls')),
-                  path('logout/', logout_then_login, name='logout'),
+                  path('logout/', custom_logout, name='logout'),
                   path('home/', redirect_to_default, name='home'),
 
                   path('inspecciones/', include([
@@ -74,5 +94,6 @@ urlpatterns = [
                       path('<int:pk>/delete/', inspecciones.views.UsuarioDeleteView.as_view(),
                            name='usuario-delete'),
                   ])),
+                  path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

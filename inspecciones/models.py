@@ -7,7 +7,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
-from multiselectfield import MultiSelectField
 
 from inspecciones.q_logic import different, if_and_only_if
 
