@@ -12,6 +12,30 @@ from inspecciones.q_logic import different, if_and_only_if
 
 from .choices import Caracteristicas
 
+from multiselectfield import MultiSelectField as MSField
+
+class MultiSelectField(MSField):
+    """
+    Custom Implementation of MultiSelectField to achieve Django 5.0 compatibility
+
+    See: https://github.com/goinnn/django-multiselectfield/issues/141#issuecomment-1911731471
+    """
+
+    def _get_flatchoices(self):
+        flat_choices = super(models.CharField, self).flatchoices
+
+        class MSFFlatchoices(list):
+            # Used to trick django.contrib.admin.utils.display_for_field into not treating the list of values as a
+            # dictionary key (which errors out)
+            def __bool__(self):
+                return False
+
+            __nonzero__ = __bool__
+
+        return MSFFlatchoices(flat_choices)
+
+    flatchoices = property(_get_flatchoices)
+
 class Organizacion(models.Model):
     nombre = models.CharField(max_length=120, blank=False, unique=True)
     logo = models.ImageField(default='blank.jpg', upload_to='logos_organizaciones')
@@ -22,12 +46,12 @@ class Organizacion(models.Model):
         reparaciones = "reparaciones"
         planeacion = "planeacion"
     
-    caracteristicas = models.CharField(
+    """ caracteristicas = models.CharField(
         max_length=20,
         choices=Caracteristicas.choices,
         blank=True,
-    )
-    #caracteristicas = MultiSelectField(choices=Caracteristicas.choices, blank=True)
+    ) """
+    caracteristicas = MultiSelectField(choices=Caracteristicas.choices, blank=True, max_length=1000, max_choices=len(Caracteristicas.choices))
     
     def __str__(self):
         return self.nombre
